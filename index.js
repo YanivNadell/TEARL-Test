@@ -15,43 +15,36 @@ app.use(express.json());
 
 //------------------------------------------------------------------------
 
-app.get('/', (req, res) => {
-    const readData = fs.readFileSync("./data.json", 'utf8').trim();
+app.get('/plane', (req, res) => {
+    const readData = fs.readFileSync("./plane.json", 'utf8').trim();
+    res.send(readData); // use send instead of write and end
+});
+app.get('/camera', (req, res) => {
+    const readData = fs.readFileSync("./camera.json", 'utf8').trim();
     res.send(readData); // use send instead of write and end
 });
 
 
-app.post('/', (request, response) => {
-    const newsData = request.body; // request.body is already an object
+app.post('/plane', (req, res) => {
+    const newData = req.body;
 
-    fs.readFile('./data.json', 'utf8', (err, data) => {
+    fs.writeFile('./plane.json', JSON.stringify(newData, null, 2), 'utf8', (err) => {
         if (err) {
-            console.error('Error reading file:', err);
-            return response.status(500).send('Error reading file');
+            console.error('Error writing file:', err);
+            return res.status(500).send('Error writing file');
         }
+        res.send('Data set successfully');
+    });
+});
+app.post('/camera', (req, res) => {
+    const newData = req.body;
 
-        let dataObject;
-        try {
-            dataObject = JSON.parse(data);
-        } catch (err) {
-            console.error('Error parsing JSON from file:', err);
-            return response.status(500).send('Error parsing JSON from file');
+    fs.writeFile('./camera.json', JSON.stringify(newData, null, 2), 'utf8', (err) => {
+        if (err) {
+            console.error('Error writing file:', err);
+            return res.status(500).send('Error writing file');
         }
-
-        if (newsData.type === 'plane') {
-            dataObject.plane = newsData;
-        } else if (newsData.type === 'camera') {
-            dataObject.camera = newsData;
-        }
-
-        fs.writeFile('./data.json', JSON.stringify(dataObject, null, 2), 'utf8', (err) => {
-            if (err) {
-                console.error('Error writing file:', err);
-                return response.status(500).send('Error writing file');
-            }
-
-            response.send('Data updated successfully');
-        });
+        res.send('Data set successfully');
     });
 });
 
@@ -60,5 +53,4 @@ app.post('/', (request, response) => {
 //when server has started
 app.listen(8000, () => {
     console.log('server started');
-    // console.log(appadress);
 });
