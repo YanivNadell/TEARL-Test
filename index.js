@@ -1,7 +1,12 @@
 const express = require('express');
 const cors = require("cors");
 const fs = require('fs');
+const os = require('os')
 //------------------------------------------------------------------------
+
+// const port = 3000
+// const appip = os.networkInterfaces().eth0[1].address
+// const appadress = 'http://['+ appip + ']:8000/'
 
 //creating an API
 const app = express();
@@ -54,6 +59,7 @@ app.post('/', (request, response) => {
 //------------------------------------------------------------------------
 
 //when server has started
-app.listen(3000, () => {
+app.listen(8000, () => {
     console.log('server started');
+    // console.log(appadress);
 });
